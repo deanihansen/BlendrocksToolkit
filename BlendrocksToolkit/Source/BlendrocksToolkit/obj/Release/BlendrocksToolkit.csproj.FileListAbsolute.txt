@@ -1,0 +1,16 @@
+C:\Source\Blendrocks\BlendrocksToolkit\Source\BlendrocksToolkit\bin\Release\BlendrocksToolkit.dll
+C:\Source\Blendrocks\BlendrocksToolkit\Source\BlendrocksToolkit\bin\Release\BlendrocksToolkit.pdb
+C:\Source\Blendrocks\BlendrocksToolkit\Source\BlendrocksToolkit\bin\Release\BlendrocksToolkit.pri
+C:\Source\Blendrocks\BlendrocksToolkit\Source\BlendrocksToolkit\obj\Release\BlendrocksToolkit.dll
+C:\Source\Blendrocks\BlendrocksToolkit\Source\BlendrocksToolkit\obj\Release\BlendrocksToolkit.pdb
+C:\Source\Blendrocks\BlendrocksToolkit\Source\BlendrocksToolkit\obj\Release\priconfig.xml
+C:\Source\Blendrocks\BlendrocksToolkit\Source\BlendrocksToolkit\obj\Release\priconfig.xml.intermediate
+C:\Source\Blendrocks\BlendrocksToolkit\Source\BlendrocksToolkit\obj\Release\layout.resfiles
+C:\Source\Blendrocks\BlendrocksToolkit\Source\BlendrocksToolkit\obj\Release\layout.resfiles.intermediate
+C:\Source\Blendrocks\BlendrocksToolkit\Source\BlendrocksToolkit\obj\Release\resources.resfiles
+C:\Source\Blendrocks\BlendrocksToolkit\Source\BlendrocksToolkit\obj\Release\resources.resfiles.intermediate
+C:\Source\Blendrocks\BlendrocksToolkit\Source\BlendrocksToolkit\obj\Release\pri.resfiles
+C:\Source\Blendrocks\BlendrocksToolkit\Source\BlendrocksToolkit\obj\Release\pri.resfiles.intermediate
+C:\Source\Blendrocks\BlendrocksToolkit\Source\BlendrocksToolkit\obj\Release\qualifiers.txt
+C:\Source\Blendrocks\BlendrocksToolkit\Source\BlendrocksToolkit\obj\Release\qualifiers.txt.intermediate
+C:\Source\Blendrocks\BlendrocksToolkit\Source\BlendrocksToolkit\obj\Release\MultipleQualifiersPerDimensionFound.txt

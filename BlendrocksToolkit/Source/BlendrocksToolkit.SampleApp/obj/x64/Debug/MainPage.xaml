@@ -1,0 +1,40 @@
+﻿<Page
+    x:Class="BlendrocksToolkit.SampleApp.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:BlendrocksToolkit.SampleApp"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <Grid
+        Background="Gray">
+        <Button x:ConnectionId='1' VerticalAlignment="Center" HorizontalAlignment="Left" Content="Back"                          x:Name="BackButton" />
+        <StackPanel
+            Orientation="Vertical"
+            d:LayoutOverrides="Height"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center">
+            <Button x:ConnectionId='2'
+                                      
+                x:Name="button"
+                Content="Slide up"/>
+            <Button x:ConnectionId='3'
+                                           
+                x:Name="button_Copy"
+                Content="Slide right"/>
+            <Button x:ConnectionId='4'
+                                        
+                Content="Slide left" />
+            <Button x:ConnectionId='5'
+                                        
+                Content="Slide down" />
+            <Button x:ConnectionId='6'
+                                        
+                Content="Fade"/>
+            <Button x:ConnectionId='7'
+                                        
+                Content="Fade on top"/>
+        </StackPanel>
+    </Grid>
+</Page>
+
