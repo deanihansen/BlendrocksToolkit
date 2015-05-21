@@ -1,2 +1,0 @@
-C:\Source\Blendrocks\BlendrocksToolkit\Source\BlendrocksToolkit.SampleApp\BlendrocksToolkit.SampleApp.csproj;x64
-C:\Source\Blendrocks\BlendrocksToolkit\Source\BlendrocksToolkit\BlendrocksToolkit.csproj;x64
