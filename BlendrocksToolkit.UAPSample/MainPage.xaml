@@ -1,0 +1,43 @@
+﻿<Page x:Class="BlendrocksToolkit.UAPSample.MainPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:BlendrocksToolkit.UAPSample"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d">
+    <Grid Background="Black">
+        <Image Stretch="UniformToFill"
+               Source="Assets/1.jpg"
+               Opacity="0.3" />
+        <Button VerticalAlignment="Center"
+                HorizontalAlignment="Left"
+                Content="Back"
+                Click="BackButton_Click"
+                x:Name="BackButton"
+                Foreground="White" />
+        <StackPanel Orientation="Vertical"
+                    d:LayoutOverrides="Height"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center">
+            <Button Tapped="button_Tapped"
+                    x:Name="button"
+                    Content="Slide up"
+                    Foreground="White" />
+            <Button Tapped="button_Copy_Tapped"
+                    Content="Slide right"
+                    Foreground="White" />
+            <Button Tapped="Button_Tapped_2"
+                    Content="Slide left"
+                    Foreground="White" />
+            <Button Tapped="Button_Tapped_1"
+                    Content="Slide down"
+                    Foreground="White" />
+            <Button Tapped="Button_Tapped_3"
+                    Content="Fade"
+                    Foreground="White" />
+            <Button Tapped="Button_Tapped_4"
+                    Content="Fade on top"
+                    Foreground="White" />
+        </StackPanel>
+    </Grid>
+</Page>

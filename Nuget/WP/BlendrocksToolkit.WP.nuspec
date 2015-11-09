@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>BlendrocksToolkit</id>
+        <version>1.0.0.8</version>
+        <title>Blendrocks UI Toolkit for WP81</title>
+        <authors>Deani Hansen</authors>
+        <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Blendrocks UI Toolkit for Windows Phone 8.1</description>
+        <releaseNotes>Toolkit containing PullToRefresh scrollviewer &amp; ScrollToTop behavior for Windows Phone 8.1</releaseNotes>
+        <tags>blendrocks toolkit winrt xaml controls</tags>
+    </metadata>
+    <files>
+        <file src="Release\Windows Phone 81\AnyCPU\BlendrocksToolkit.dll" target="lib\wpa81\BlendrocksToolkit.dll" />
+        <file src="Release\Windows Phone 81\AnyCPU\BlendrocksToolkit.pri" target="lib\wpa81\BlendrocksToolkit.pri" />
+        <file src="Release\Windows Phone 81\AnyCPU\BlendrocksToolkit.xr.xml" target="lib\wpa81\BlendrocksToolkit\BlendrocksToolkit.xr.xml" />
+        <file src="Release\Windows Phone 81\AnyCPU\Controls\PullToRefresh\PullToRefreshScrollViewer.xbf" target="lib\wpa81\BlendrocksToolkit\Controls\PullToRefresh\PullToRefreshScrollViewer.xbf" />
+        <file src="Release\Windows Phone 81\AnyCPU\Themes\Generic.xbf" target="lib\wpa81\BlendrocksToolkit\Themes\Generic.xbf" />
+    </files>
+</package>
