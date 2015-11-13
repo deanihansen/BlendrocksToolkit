@@ -2,17 +2,20 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>BlendrocksToolkit</id>
-        <version>1.0.0.0</version>
+        <version>1.0.0.2</version>
         <title>Blendrocks UI Toolkit</title>
         <authors>Deani Hansen</authors>
         <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>Blendrocks UI Toolkit for Windows Universal apps</description>
+        <description>Blendrocks UI Toolkit for Windows Universal apps.
+Project state: EXPERIMENTAL</description>
         <releaseNotes>Experimental toolkit containing classes to enhance the UWP experience</releaseNotes>
         <tags>blendrocks toolkit winrt uwp xaml controls</tags>
     </metadata>
     <files>
-        <file src="..\..\Release\UWP\BlendrocksToolkit.dll" target="lib\uap10.0\BlendrocksToolkit.dll" />
-        <file src="..\..\Release\UWP\BlendrocksToolkit.pri" target="lib\uap10.0\BlendrocksToolkit.pri" />
+        <file src="lib\uap10.0\BlendrocksToolkit\Properties\BlendrocksToolkit.rd.xml" target="lib\uap10.0\BlendrocksToolkit\Properties\BlendrocksToolkit.rd.xml" />
+        <file src="lib\uap10.0\BlendrocksToolkit.dll" target="lib\uap10.0\BlendrocksToolkit.dll" />
+        <file src="lib\uap10.0\BlendrocksToolkit.pdb" target="lib\uap10.0\BlendrocksToolkit.pdb" />
+        <file src="lib\uap10.0\BlendrocksToolkit.pri" target="lib\uap10.0\BlendrocksToolkit.pri" />
     </files>
 </package>
