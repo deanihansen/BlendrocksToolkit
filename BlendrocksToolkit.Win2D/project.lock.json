@@ -324,7 +324,7 @@
           "lib/windows8/System.Reactive.Windows.Threading.dll": {}
         }
       },
-      "Splat/1.0.0": {
+      "Splat/1.6.2": {
         "compile": {
           "lib/NetCore45/Splat.dll": {}
         },
@@ -2043,7 +2043,7 @@
           "lib/windows8/System.Reactive.Windows.Threading.dll": {}
         }
       },
-      "Splat/1.0.0": {
+      "Splat/1.6.2": {
         "compile": {
           "lib/NetCore45/Splat.dll": {}
         },
@@ -3798,7 +3798,7 @@
           "lib/windows8/System.Reactive.Windows.Threading.dll": {}
         }
       },
-      "Splat/1.0.0": {
+      "Splat/1.6.2": {
         "compile": {
           "lib/NetCore45/Splat.dll": {}
         },
@@ -5558,7 +5558,7 @@
           "lib/windows8/System.Reactive.Windows.Threading.dll": {}
         }
       },
-      "Splat/1.0.0": {
+      "Splat/1.6.2": {
         "compile": {
           "lib/NetCore45/Splat.dll": {}
         },
@@ -7313,7 +7313,7 @@
           "lib/windows8/System.Reactive.Windows.Threading.dll": {}
         }
       },
-      "Splat/1.0.0": {
+      "Splat/1.6.2": {
         "compile": {
           "lib/NetCore45/Splat.dll": {}
         },
@@ -9073,7 +9073,7 @@
           "lib/windows8/System.Reactive.Windows.Threading.dll": {}
         }
       },
-      "Splat/1.0.0": {
+      "Splat/1.6.2": {
         "compile": {
           "lib/NetCore45/Splat.dll": {}
         },
@@ -10828,7 +10828,7 @@
           "lib/windows8/System.Reactive.Windows.Threading.dll": {}
         }
       },
-      "Splat/1.0.0": {
+      "Splat/1.6.2": {
         "compile": {
           "lib/NetCore45/Splat.dll": {}
         },
@@ -13143,8 +13143,8 @@
         "Rx-XAML.nuspec"
       ]
     },
-    "Splat/1.0.0": {
-      "sha512": "QuPEi4iW1zvSp8cTyx3Mu5eFM+kI3XnGzrLsR+1ymBLlAUt+l4novhtAR4VZO6E+X8C0V9ymfSxXMZvnw9TLig==",
+    "Splat/1.6.2": {
+      "sha512": "DeH0MxPU+D4JchkIDPYG4vUT+hsWs9S41cFle0/4K5EJMXWurx5DzAkj2366DfK14/XKNhsu6tCl4dZXJ3CD4w==",
       "type": "Package",
       "files": [
         "[Content_Types].xml",
@@ -13160,12 +13160,18 @@
         "lib/NetCore45/Splat.dll",
         "lib/NetCore45/Splat.pdb",
         "lib/NetCore45/Splat.pri",
-        "lib/Portable-Net45+WinRT45+WP8/Splat.dll",
-        "lib/Portable-Net45+WinRT45+WP8/Splat.dll.mdb",
-        "lib/Portable-Net45+WinRT45+WP8/Splat.pdb",
+        "lib/Portable-net45+win+wpa81+wp80/Splat.dll",
+        "lib/Portable-Win81+Wpa81/Splat.dll",
+        "lib/Portable-Win81+Wpa81/Splat.pdb",
+        "lib/Portable-Win81+Wpa81/Splat.pri",
         "lib/wp8/Splat.dll",
         "lib/wp8/Splat.pdb",
-        "package/services/metadata/core-properties/4f39c80d264d4bd9a581e428280fb8dc.psmdcp",
+        "lib/Xamarin.iOS10/Splat.dll",
+        "lib/Xamarin.iOS10/Splat.dll.mdb",
+        "lib/Xamarin.Mac10/Splat.dll",
+        "lib/Xamarin.Mac10/Splat.dll.mdb",
+        "lib/Xamarin.Mac10/Splat-XamarinMac.csproj.FilesWrittenAbsolute.txt",
+        "package/services/metadata/core-properties/807e3bdc9da2465cb88816aeacf7cdd8.psmdcp",
         "Splat.nuspec"
       ]
     },
@@ -15893,6 +15899,7 @@
       "Microsoft.ApplicationInsights.WindowsApps >= 1.0.0",
       "Microsoft.NETCore.UniversalWindowsPlatform >= 5.0.0",
       "reactiveui >= 6.5.0",
+      "Splat >= 1.6.2",
       "Win2D.uwp >= 1.8.0"
     ],
     "UAP,Version=v10.0": []

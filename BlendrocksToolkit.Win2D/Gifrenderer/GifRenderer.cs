@@ -5,6 +5,7 @@ using Microsoft.Graphics.Canvas.UI.Xaml;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Reactive.Disposables;
@@ -69,6 +70,7 @@ namespace BlendrocksToolkit.Win2D.Controls
                   .Where(x => x)
                   .DistinctUntilChanged()
                   .ObserveOn(RxApp.MainThreadScheduler)
+                  .Do(x => Debug.WriteLine("x"))
                   .SelectMany(_ => PrepareGifRendering().ToObservable())
                   .SelectMany(x => CreateCanvas().ToObservable())
                   .Subscribe());
@@ -247,6 +249,7 @@ namespace BlendrocksToolkit.Win2D.Controls
             }
             catch (Exception)
             {
+                // We could potentially crash by leaving the viewport in the middle of a sequence
                 StopByCatch();
                 return;
             }

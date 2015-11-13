@@ -85,7 +85,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
-    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+    <UseDotNetNativeToolchain>false</UseDotNetNativeToolchain>
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
@@ -118,6 +118,7 @@
     <None Include="BlendrocksToolkit.Win2D_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="firefly2.gif" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -135,6 +136,11 @@
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
