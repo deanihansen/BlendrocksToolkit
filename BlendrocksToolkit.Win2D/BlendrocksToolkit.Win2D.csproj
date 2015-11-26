@@ -92,6 +92,11 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Rain\Assets\city.jpg" />
+    <Content Include="Rain\Assets\drop-alpha.png" />
+    <Content Include="Rain\Assets\drop-color.png" />
+    <Content Include="Rain\Assets\drop-shine.png" />
+    <Content Include="Rain\Assets\drop-shine2.png" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
@@ -106,6 +111,9 @@
     <Compile Include="Gifrenderer\Structs\FrameProperties.cs" />
     <Compile Include="Gifrenderer\Structs\ImageProperties.cs" />
     <Compile Include="Helpers\StorageHelper.cs" />
+    <Compile Include="Gifrenderer.xaml.cs">
+      <DependentUpon>Gifrenderer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -133,6 +141,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Gifrenderer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

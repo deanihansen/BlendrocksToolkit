@@ -141,7 +141,7 @@ namespace BlendrocksToolkit.Win2D.Controls
         {
             try
             {
-                var file = await _gifFileHandler.GetCacheOrDownloadAsStorageFileFromUri(Source);/// await DecodeGif(Source);
+                var file = await _gifFileHandler.GetCacheOrDownloadAsStorageFileFromUri(Source); /// await DecodeGif(Source);
 
                 using (var stream = await file.OpenReadAsync())
                 {
@@ -228,7 +228,6 @@ namespace BlendrocksToolkit.Win2D.Controls
         {
             try
             {
-
                 await Task.Delay((int)_currentGifFrame.DelayMilliseconds);
                 var frame = await _decoder.GetFrameAsync((uint)_currentFrameIndex);
                 var pixelData = await frame.GetPixelDataAsync(
