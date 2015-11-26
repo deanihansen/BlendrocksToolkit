@@ -47,9 +47,9 @@ namespace BlendrocksToolkit.Win2D
                 CanvasCommandList cl = new CanvasCommandList(sender);
                 using (CanvasDrawingSession clds = cl.CreateDrawingSession())
                 {
-                    clds.FillCircle(20f, 20f, 20f, Colors.Blue);
-                    clds.FillCircle(60, 60, 20f, Colors.Blue);
-                    clds.FillCircle(100, 100, 20f, Colors.Blue);
+                    clds.FillCircle(20f, 20f, 20f, Colors.Red);
+                    clds.FillCircle(60, 60, 20f, Colors.Red);
+                    clds.FillCircle(100, 100, 20f, Colors.Red);
                 }
 
             GaussianBlurEffect blur = new GaussianBlurEffect();
