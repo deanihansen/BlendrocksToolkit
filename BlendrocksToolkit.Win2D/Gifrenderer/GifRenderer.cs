@@ -70,7 +70,6 @@ namespace BlendrocksToolkit.Win2D.Controls
                   .Where(x => x)
                   .DistinctUntilChanged()
                   .ObserveOn(RxApp.MainThreadScheduler)
-                  .Do(x => Debug.WriteLine("x"))
                   .SelectMany(_ => PrepareGifRendering().ToObservable())
                   .SelectMany(x => CreateCanvas().ToObservable())
                   .Subscribe());
@@ -195,14 +194,13 @@ namespace BlendrocksToolkit.Win2D.Controls
 
         private async Task CreateCanvas()
         {
-            await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
              {
                  _canvasControl = new CanvasControl();
                  _canvasControl.UseSharedDevice = true;
                  _canvasControl.CreateResources += Canvas_CreateResources;
                  _canvasControl.Draw += Canvas_Draw;
                  this._grid.Children.Add(_canvasControl);
-
              });
         }
 
@@ -241,7 +239,6 @@ namespace BlendrocksToolkit.Win2D.Controls
                 CreateActualPixels(pixelData.DetachPixelData());
 
                 var newDelay = _currentGifFrame.DelayMilliseconds - time.ElapsedMilliseconds;
-                Debug.WriteLine(newDelay);
                 if (newDelay > 0 && time.ElapsedMilliseconds < 300)
                     await Task.Delay((int)newDelay);
 
@@ -323,7 +320,11 @@ namespace BlendrocksToolkit.Win2D.Controls
             {
                 using (var session = args.DrawingSession)
                 {
-                    var frameBitmap = CanvasBitmap.CreateFromBytes(session, _pixels, _imageProperties.PixelWidth, _imageProperties.PixelHeight, DirectXPixelFormat.B8G8R8A8UIntNormalized);
+                    var frameBitmap = CanvasBitmap.CreateFromBytes(session,
+                        _pixels, 
+                        _imageProperties.PixelWidth,
+                        _imageProperties.PixelHeight,
+                        DirectXPixelFormat.B8G8R8A8UIntNormalized);
 
                     using (frameBitmap)
                     {

@@ -16,13 +16,12 @@ namespace BlendrocksToolkit.Win2D.Controls
 
             try
             {
-                string filename = string.Empty;
-                filename = source.Segments.Last().Contains("giphy") ? string.Concat(source.Segments).Replace("/", "") : source.Segments.Last();
+                string filename = string.Concat(source.Segments).Replace("/", "");
+                //TODO: Improve and compare by URL rather than just relying on filename
 
                 if (source.AbsoluteUri.Contains("http"))
                 {
                     //caches the file, never replaces it. Consider adding expirydate
-
                     if (await StorageHelper.FileExistsAsync(filename) == false)
                     {
                         file = await DownloadFileToStorageAsync(filename, source, file);

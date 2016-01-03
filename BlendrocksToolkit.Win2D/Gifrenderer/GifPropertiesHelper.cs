@@ -6,7 +6,6 @@ using Windows.Graphics.Imaging;
 
 namespace BlendrocksToolkit.Win2D.Controls
 {
-
     public class GifPropertiesHelper
     {   
         /// <summary>
@@ -52,17 +51,12 @@ namespace BlendrocksToolkit.Win2D.Controls
                     var disposal = (byte)properties[disposalProperty].Value;
                     if (disposal == 2)
                     {
-                        // 0 = undefined
-                        // 1 = none (compose next frame on top of this one, default)
-                        // 2 = dispose
-                        // 3 = revert to previous (not supported)
                         shouldDispose = true;
                     }
                 }
             }
             catch
             {
-                // These properties are not required, so it's okay to ignore failure.
             }
 
             return new FrameProperties(
@@ -90,7 +84,7 @@ namespace BlendrocksToolkit.Win2D.Controls
             var pixelWidth = (ushort)properties[widthProperty].Value;
             var pixelHeight = (ushort)properties[heightProperty].Value;
 
-            var loopCount = 0; // Repeat forever by default
+            var loopCount = 0;
             var isAnimated = true;
 
             try
@@ -108,13 +102,6 @@ namespace BlendrocksToolkit.Win2D.Controls
                     {
                         if (properties.ContainsKey(dataProperty) && properties[dataProperty].Type == PropertyType.UInt8Array)
                         {
-                            //  The data is in the following format: 
-                            //  byte 0: extsize (must be > 1) 
-                            //  byte 1: loopType (1 == animated gif) 
-                            //  byte 2: loop count (least significant byte) 
-                            //  byte 3: loop count (most significant byte) 
-                            //  byte 4: set to zero 
-
                             var data = (byte[])properties[dataProperty].Value;
                             loopCount = data[2] | data[3] << 8;
                             isAnimated = data[1] == 1;
@@ -124,7 +111,6 @@ namespace BlendrocksToolkit.Win2D.Controls
             }
             catch
             {
-                // These properties are not required, so it's okay to ignore failure.
             }
 
             return new ImageProperties(pixelWidth, pixelHeight, isAnimated, loopCount);
