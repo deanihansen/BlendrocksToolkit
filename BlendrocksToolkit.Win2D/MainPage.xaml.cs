@@ -95,7 +95,7 @@ namespace BlendrocksToolkit.Win2D
             {
                 return string.IsNullOrEmpty(text) ? 0.0f : float.Parse(text.Trim());
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return 0f;
             }

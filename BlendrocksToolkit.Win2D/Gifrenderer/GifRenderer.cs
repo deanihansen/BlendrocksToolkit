@@ -228,7 +228,7 @@ namespace BlendrocksToolkit.Win2D.Controls
         {
             try
             {
-                await Task.Delay((int)_currentGifFrame.DelayMilliseconds);
+                var time = Stopwatch.StartNew();
                 var frame = await _decoder.GetFrameAsync((uint)_currentFrameIndex);
                 var pixelData = await frame.GetPixelDataAsync(
                     BitmapPixelFormat.Bgra8,
@@ -239,6 +239,14 @@ namespace BlendrocksToolkit.Win2D.Controls
                     );
 
                 CreateActualPixels(pixelData.DetachPixelData());
+
+                var newDelay = _currentGifFrame.DelayMilliseconds - time.ElapsedMilliseconds;
+                Debug.WriteLine(newDelay);
+                if (newDelay > 0 && time.ElapsedMilliseconds < 300)
+                    await Task.Delay((int)newDelay);
+
+                time.Stop();
+
                 if (_canvasControl != null)
                 {
                     _canvasControl.Invalidate();
