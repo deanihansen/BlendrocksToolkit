@@ -4,14 +4,19 @@ using Microsoft.Graphics.Canvas.UI;
 using Microsoft.Graphics.Canvas.UI.Xaml;
 using ReactiveUI;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reactive.Threading.Tasks;
+using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Graphics.DirectX;
 using Windows.Graphics.Imaging;
@@ -19,6 +24,7 @@ using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
+using BlendrocksToolkit.Win2D.Controls;
 
 namespace BlendrocksToolkit.Win2D.Controls
 {
@@ -27,14 +33,18 @@ namespace BlendrocksToolkit.Win2D.Controls
         public static readonly DependencyProperty SourceProperty = DependencyProperty.Register("Source", typeof(Uri), typeof(GifRenderer), new PropertyMetadata(null, SourceChanged));
         public static readonly DependencyProperty ScaleSettingsProperty = DependencyProperty.Register("ScaleSettings", typeof(ScaleSettings), typeof(GifRenderer), new PropertyMetadata(ScaleSettings.Scale));
 
+        private readonly GifPropertiesHelper _gifPropertiesHelper;
+        private readonly GifFileHandler _gifFileHandler;
+        private readonly Subject<bool> _readyForRendering;
+        private readonly CompositeDisposable _disp;
+        private readonly Subject<FrameProperties> _nextFrame;
+
         private CanvasControl _canvasControl;
         private ScaleEffect _scaleEffect;
         private BitmapDecoder _decoder;
         private ImageProperties _imageProperties;
         private FrameProperties _currentGifFrame;
         private List<FrameProperties> _frameProperties;
-        private GifPropertiesHelper _gifPropertiesHelper;
-        private GifFileHandler _gifFileHandler;
         private int _currentFrameIndex;
         private int _frameCount;
         private int _maxFrameIndex;
@@ -43,12 +53,8 @@ namespace BlendrocksToolkit.Win2D.Controls
         private double _scaleY;
 
         private byte[] _pixels;
-        private byte[] _imageBuffer;
+        private IBuffer _imagebuffer;
         private Grid _grid;
-
-        private CompositeDisposable _disp;
-        private Subject<bool> _readyForRendering;
-        private Subject<FrameProperties> _nextFrame;
 
         public GifRenderer()
         {
@@ -69,13 +75,11 @@ namespace BlendrocksToolkit.Win2D.Controls
             _disp.Add(this.WhenAnyObservable(x => x.ReadyForRendering)
                   .Where(x => x)
                   .DistinctUntilChanged()
-                  .ObserveOn(RxApp.MainThreadScheduler)
                   .SelectMany(_ => PrepareGifRendering().ToObservable())
                   .SelectMany(x => CreateCanvas().ToObservable())
                   .Subscribe());
 
             _disp.Add(this.WhenAnyObservable(x => x._nextFrame)
-                .ObserveOn(RxApp.MainThreadScheduler)
                 .SelectMany(_ => ChangeCurrentFrameAsync().ToObservable())
                 .Subscribe());
 
@@ -103,7 +107,7 @@ namespace BlendrocksToolkit.Win2D.Controls
         private static void SourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = (GifRenderer)d;
-            if (control != null && control._grid != null)
+            if (control?._grid != null)
             {
                 control._readyForRendering.OnNext(true);
             }
@@ -140,7 +144,7 @@ namespace BlendrocksToolkit.Win2D.Controls
         {
             try
             {
-                var file = await _gifFileHandler.GetCacheOrDownloadAsStorageFileFromUri(Source); /// await DecodeGif(Source);
+                var file = await _gifFileHandler.GetCacheOrDownloadAsStorageFileFromUri(Source);
 
                 using (var stream = await file.OpenReadAsync())
                 {
@@ -155,7 +159,10 @@ namespace BlendrocksToolkit.Win2D.Controls
                     }
                 }
             }
-            catch (Exception) { }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
 
         public async Task LoadImageAsync(IRandomAccessStreamWithContentType stream)
@@ -182,26 +189,20 @@ namespace BlendrocksToolkit.Win2D.Controls
         /// </summary>
         private void CreateImageBuffer()
         {
-            _imageBuffer = new byte[_imageProperties.PixelWidth * _imageProperties.PixelHeight * 4]; // needed to continue to draw on top
-            for (int i = 0; i < _imageBuffer.Length; i += 4)
-            {
-                _imageBuffer[i + 0] = 255;
-                _imageBuffer[i + 1] = 255;
-                _imageBuffer[i + 2] = 255;
-                _imageBuffer[i + 3] = 255;
-            }
+            var imageArray = new byte[_imageProperties.PixelWidth * _imageProperties.PixelHeight * 4]; // needed to continue to draw on top
+
+            _imagebuffer = imageArray.AsBuffer();
         }
 
         private async Task CreateCanvas()
         {
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-             {
-                 _canvasControl = new CanvasControl();
-                 _canvasControl.UseSharedDevice = true;
-                 _canvasControl.CreateResources += Canvas_CreateResources;
-                 _canvasControl.Draw += Canvas_Draw;
-                 this._grid.Children.Add(_canvasControl);
-             });
+            {
+                _canvasControl = new CanvasControl { UseSharedDevice = false };
+                _canvasControl.CreateResources += Canvas_CreateResources;
+                _canvasControl.Draw += Canvas_Draw;
+                this._grid.Children.Add(_canvasControl);
+            });
         }
 
         private async void Canvas_CreateResources(CanvasControl sender, CanvasCreateResourcesEventArgs args)
@@ -216,7 +217,7 @@ namespace BlendrocksToolkit.Win2D.Controls
         public bool IsOffScreen()
         {
             var result = FrameworkElementAutomationPeer.FromElement(this);
-            return result != null ? result.IsOffscreen() : true;
+            return result?.IsOffscreen() ?? true;
         }
 
         /// <summary>
@@ -244,10 +245,7 @@ namespace BlendrocksToolkit.Win2D.Controls
 
                 time.Stop();
 
-                if (_canvasControl != null)
-                {
-                    _canvasControl.Invalidate();
-                }
+                _canvasControl?.Invalidate();
 
                 SetNextFrame();
             }
@@ -268,34 +266,29 @@ namespace BlendrocksToolkit.Win2D.Controls
         {
             try
             {
-                if (_imageBuffer == null)
+                if (_imagebuffer == null)
                 {
                     CreateImageBuffer();
                 }
 
                 if (_currentGifFrame.ShouldDispose)
                 {
-                    Array.Clear(_imageBuffer, 0, _imageBuffer.Length);
+                    CreateImageBuffer();
                 }
+
+                var pixelDataBuffer = pixelData.AsBuffer();
 
                 for (int height = 0; height < (int)_currentGifFrame.Rect.Height; height++)
                 {
-                    for (int width = 0; width < (int)_currentGifFrame.Rect.Width; width++)
-                    {
-                        var sourceOffset = (height * (int)_currentGifFrame.Rect.Width + width) * 4;
-                        var destOffset = (((int)_currentGifFrame.Rect.Y + height) * _imageProperties.PixelWidth + (int)_currentGifFrame.Rect.X + width) * 4;
+                    var pixelDataStartOffset = (height * (int)_currentGifFrame.Rect.Width) * 4;
+                    var imageBufferStartOffset = (((int)_currentGifFrame.Rect.Y + height) * _imageProperties.PixelWidth + (int)_currentGifFrame.Rect.X) * 4;
+                    var pixelDataEndOffset = (height * (int)_currentGifFrame.Rect.Width + (int)_currentGifFrame.Rect.Width) * 4;
 
-                        if (pixelData[sourceOffset + 3] == 255)
-                        {
-                            _imageBuffer[destOffset + 0] = pixelData[sourceOffset + 0];
-                            _imageBuffer[destOffset + 1] = pixelData[sourceOffset + 1];
-                            _imageBuffer[destOffset + 2] = pixelData[sourceOffset + 2];
-                            _imageBuffer[destOffset + 3] = 255;
-                        }
-                    }
+                    pixelDataBuffer.CopyTo((uint)pixelDataStartOffset, _imagebuffer, (uint)imageBufferStartOffset, (uint)(pixelDataEndOffset - pixelDataStartOffset));
                 }
 
-                _pixels = _imageBuffer;
+                _pixels = _imagebuffer.ToArray();
+
             }
             catch (Exception)
             {
@@ -311,32 +304,29 @@ namespace BlendrocksToolkit.Win2D.Controls
             await Task.Delay(750);
             Stop();
             InactiveGifManager.Add(this);
-            return;
         }
 
         private void Canvas_Draw(CanvasControl sender, CanvasDrawEventArgs args)
         {
-            if (_pixels != null)
+            if (_pixels == null) return;
+            using (var session = args.DrawingSession)
             {
-                using (var session = args.DrawingSession)
+                var frameBitmap = CanvasBitmap.CreateFromBytes(session,
+                    _pixels,
+                    _imageProperties.PixelWidth,
+                    _imageProperties.PixelHeight,
+                    DirectXPixelFormat.B8G8R8A8UIntNormalized);
+
+                using (frameBitmap)
                 {
-                    var frameBitmap = CanvasBitmap.CreateFromBytes(session,
-                        _pixels, 
-                        _imageProperties.PixelWidth,
-                        _imageProperties.PixelHeight,
-                        DirectXPixelFormat.B8G8R8A8UIntNormalized);
-
-                    using (frameBitmap)
+                    _scaleEffect.Source = frameBitmap;
+                    _scaleEffect.Scale = new Vector2()
                     {
-                        _scaleEffect.Source = frameBitmap;
-                        _scaleEffect.Scale = new Vector2()
-                        {
-                            X = (float)_scaleX,
-                            Y = (float)_scaleY
-                        };
+                        X = (float)_scaleX,
+                        Y = (float)_scaleY
+                    };
 
-                        session.DrawImage(_scaleEffect, 0f, 0f);
-                    }
+                    session.DrawImage(_scaleEffect, 0f, 0f);
                 }
             }
         }
@@ -396,9 +386,6 @@ namespace BlendrocksToolkit.Win2D.Controls
                     }
 
                     break;
-
-                default:
-                    break;
             }
 
             _scaleEffect = new ScaleEffect();
@@ -407,8 +394,9 @@ namespace BlendrocksToolkit.Win2D.Controls
         public void Dispose()
         {
             _pixels = null;
-            _imageBuffer = null;
+            _imagebuffer = null;
             _disp.Clear();
+
             if (_canvasControl != null)
             {
                 _canvasControl.CreateResources -= Canvas_CreateResources;
