@@ -4,19 +4,14 @@ using Microsoft.Graphics.Canvas.UI;
 using Microsoft.Graphics.Canvas.UI.Xaml;
 using ReactiveUI;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Numerics;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reactive.Threading.Tasks;
-using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading;
 using System.Threading.Tasks;
 using Windows.Graphics.DirectX;
 using Windows.Graphics.Imaging;
@@ -24,7 +19,6 @@ using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
-using BlendrocksToolkit.Win2D.Controls;
 
 namespace BlendrocksToolkit.Win2D.Controls
 {
@@ -53,7 +47,7 @@ namespace BlendrocksToolkit.Win2D.Controls
         private double _scaleY;
 
         private byte[] _pixels;
-        private IBuffer _imagebuffer;
+        private byte[] _imageBuffer;
         private Grid _grid;
 
         public GifRenderer()
@@ -107,7 +101,7 @@ namespace BlendrocksToolkit.Win2D.Controls
         private static void SourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = (GifRenderer)d;
-            if (control?._grid != null)
+            if (control?._grid != null && control.Source.ToString().EndsWith(".gif"))
             {
                 control._readyForRendering.OnNext(true);
             }
@@ -118,7 +112,7 @@ namespace BlendrocksToolkit.Win2D.Controls
             base.OnApplyTemplate();
             _grid = GetTemplateChild("rootgrid") as Grid;
 
-            if (Source != null)
+            if (Source != null && Source.ToString().EndsWith(".gif"))
             {
                 _readyForRendering.OnNext(true);
             }
@@ -189,9 +183,21 @@ namespace BlendrocksToolkit.Win2D.Controls
         /// </summary>
         private void CreateImageBuffer()
         {
-            var imageArray = new byte[_imageProperties.PixelWidth * _imageProperties.PixelHeight * 4]; // needed to continue to draw on top
-
-            _imagebuffer = imageArray.AsBuffer();
+            try
+            {
+                _imageBuffer = new byte[_imageProperties.PixelWidth * _imageProperties.PixelHeight * 4]; // needed to continue to draw on top
+                for (int i = 0; i < _imageBuffer.Length; i += 4)
+                {
+                    _imageBuffer[i + 0] = 255;
+                    _imageBuffer[i + 1] = 255;
+                    _imageBuffer[i + 2] = 255;
+                    _imageBuffer[i + 3] = 255;
+                }
+            }
+            catch (Exception)
+            {
+                // unlucky scroll timing
+            }
         }
 
         private async Task CreateCanvas()
@@ -253,9 +259,7 @@ namespace BlendrocksToolkit.Win2D.Controls
             {
                 // We could potentially crash by leaving the viewport in the middle of a sequence
                 StopByCatch();
-                return;
             }
-
         }
 
         /// <summary>
@@ -264,39 +268,33 @@ namespace BlendrocksToolkit.Win2D.Controls
         /// <param name="pixelData"></param>
         private void CreateActualPixels(byte[] pixelData)
         {
-            try
+            if (_imageBuffer == null)
             {
-                if (_imagebuffer == null)
-                {
-                    CreateImageBuffer();
-                }
-
-                if (_currentGifFrame.ShouldDispose)
-                {
-                    CreateImageBuffer();
-                }
-
-                var pixelDataBuffer = pixelData.AsBuffer();
-
-                for (int height = 0; height < (int)_currentGifFrame.Rect.Height; height++)
-                {
-                    var pixelDataStartOffset = (height * (int)_currentGifFrame.Rect.Width) * 4;
-                    var imageBufferStartOffset = (((int)_currentGifFrame.Rect.Y + height) * _imageProperties.PixelWidth + (int)_currentGifFrame.Rect.X) * 4;
-                    var pixelDataEndOffset = (height * (int)_currentGifFrame.Rect.Width + (int)_currentGifFrame.Rect.Width) * 4;
-
-                    pixelDataBuffer.CopyTo((uint)pixelDataStartOffset, _imagebuffer, (uint)imageBufferStartOffset, (uint)(pixelDataEndOffset - pixelDataStartOffset));
-                }
-
-                _pixels = _imagebuffer.ToArray();
-
+                CreateImageBuffer();
             }
-            catch (Exception)
+
+            if (_currentGifFrame.ShouldDispose)
             {
-                // if swapped out too offen, we _imagebuffer gets messed up. We deactivate it and lets it get rerendered. 
-                // Will get restarted by the InactiveGifManager
-                StopByCatch();
-                return;
+                Array.Clear(_imageBuffer, 0, _imageBuffer.Length);
             }
+
+            for (int height = 0; height < (int)_currentGifFrame.Rect.Height; height++)
+            {
+                for (int width = 0; width < (int)_currentGifFrame.Rect.Width; width++)
+                {
+                    var sourceOffset = (height * (int)_currentGifFrame.Rect.Width + width) * 4;
+                    var destOffset = (((int)_currentGifFrame.Rect.Y + height) * _imageProperties.PixelWidth + (int)_currentGifFrame.Rect.X + width) * 4;
+
+                    if (pixelData[sourceOffset + 3] == 255)
+                    {
+                        _imageBuffer[destOffset + 0] = pixelData[sourceOffset + 0];
+                        _imageBuffer[destOffset + 1] = pixelData[sourceOffset + 1];
+                        _imageBuffer[destOffset + 2] = pixelData[sourceOffset + 2];
+                    }
+                }
+            }
+
+            _pixels = _imageBuffer;
         }
 
         private async void StopByCatch()
@@ -309,6 +307,7 @@ namespace BlendrocksToolkit.Win2D.Controls
         private void Canvas_Draw(CanvasControl sender, CanvasDrawEventArgs args)
         {
             if (_pixels == null) return;
+
             using (var session = args.DrawingSession)
             {
                 var frameBitmap = CanvasBitmap.CreateFromBytes(session,
@@ -394,7 +393,7 @@ namespace BlendrocksToolkit.Win2D.Controls
         public void Dispose()
         {
             _pixels = null;
-            _imagebuffer = null;
+            _imageBuffer = null;
             _disp.Clear();
 
             if (_canvasControl != null)

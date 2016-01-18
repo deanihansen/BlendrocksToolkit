@@ -92,6 +92,8 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="bow.gif" />
+    <Content Include="fish.gif" />
     <Content Include="Rain\Assets\city.jpg" />
     <Content Include="Rain\Assets\drop-alpha.png" />
     <Content Include="Rain\Assets\drop-color.png" />
